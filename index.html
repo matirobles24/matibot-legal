@@ -180,11 +180,11 @@
 
   /* Fundador */
   .founder{border-top:1px solid var(--line)}
-  .founder .wrap{display:grid;grid-template-columns:190px 1fr;gap:48px;align-items:center}
-  .portrait{position:relative;width:100%;max-width:190px}
-  .portrait img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:50%;border:1px solid var(--line)}
-  .portrait::after{content:"";position:absolute;right:-12px;bottom:-12px;width:80px;height:80px;z-index:-1;
-    background-image:radial-gradient(rgba(159,176,217,.45) 1.4px, transparent 1.8px);background-size:12px 12px}
+  .founder .wrap{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center}
+  .portrait{position:relative;width:176px;height:176px;border-radius:50%;padding:5px;
+    background:conic-gradient(from 200deg, #5B6B8C, #9FB0D9, #232B42, #5B6B8C)}
+  .portrait img{display:block;width:166px;height:166px;object-fit:cover;object-position:50% 30%;border-radius:50%;border:4px solid var(--bg)}
+  
   .founder h2{margin-bottom:6px}
   .role{color:var(--glow);font-weight:600;margin-bottom:22px}
   .founder p.bio{color:var(--muted);max-width:34em;margin-bottom:14px}
@@ -231,6 +231,13 @@
   .channels a{font-weight:600;text-decoration:none}
   .channels a:hover{text-decoration:underline}
 
+  .wa-float{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:120;
+    display:flex;align-items:center;gap:10px;height:58px;padding:0 18px;border-radius:999px;background:#25D366;color:#fff;
+    text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  .wa-float i{font-size:28px}
+  .wa-float span{display:none}
+  .wa-float:hover{background:#1EBE5A}
+  @media (min-width:900px){.wa-float span{display:inline}}
   footer{border-top:1px solid var(--line);padding:36px 0;font-size:14px;color:var(--muted)}
   footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
   footer .brand{display:flex;align-items:center;gap:12px}
@@ -253,7 +260,7 @@
     .steps{grid-template-columns:1fr}
     .step,.step + .step{padding:24px 0;border-left:none;border-top:1px solid var(--line)}
     .founder .wrap{gap:40px}
-    .portrait{max-width:150px}
+    .founder .wrap{grid-template-columns:1fr}
     section{padding:72px 0}
     .quiz{padding:24px}
     .chip{font-size:13px;padding:6px 11px 6px 8px}
@@ -527,8 +534,8 @@
           <p id="r-text"></p>
           <label class="field"><span>¿Cómo se llama tu negocio?</span><input id="negocio" type="text" autocomplete="organization" placeholder="Ej.: Estética Lumière"></label>
           <div class="actions">
-            <a class="btn btn-primary" id="send" href="#">Enviar mi diagnóstico por mail</a>
-            <a class="btn btn-ghost" href="https://m.me/671907219344800" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-messenger"></i>Escribirnos por Messenger</a>
+            <a class="btn btn-primary" id="send-wa" href="#"><i class="fa-brands fa-whatsapp"></i>Enviar por WhatsApp</a>
+            <a class="btn btn-ghost" id="send" href="#">Enviar por mail</a>
           </div>
         </div>
       </form>
@@ -542,6 +549,7 @@
         <p class="intro">Contanos qué hacés y te respondemos con una propuesta a medida.</p>
       </div>
       <ul class="channels">
+        <li><span style="--c:var(--wa)"><i class="fa-brands fa-whatsapp"></i>WhatsApp</span><a href="https://wa.me/5493513210977?text=Hola%2C%20vengo%20de%20la%20web%20de%20MR%20Expand" target="_blank" rel="noopener">+54 9 351 321-0977</a></li>
         <li><span><i class="fa-regular fa-envelope"></i>Email</span><a href="mailto:matirobles.2495@gmail.com">matirobles.2495@gmail.com</a></li>
         <li><span style="--c:var(--ig)"><i class="fa-brands fa-instagram"></i>Instagram</span><a href="https://www.instagram.com/expand_mr/" target="_blank" rel="noopener">@expand_mr</a></li>
         <li><span style="--c:var(--ms)"><i class="fa-brands fa-facebook-messenger"></i>Messenger</span><a href="https://m.me/671907219344800" target="_blank" rel="noopener">MR Expand</a></li>
@@ -560,6 +568,8 @@
     </nav>
   </div>
 </footer>
+
+<a class="wa-float" href="https://wa.me/5493513210977?text=Hola%2C%20vengo%20de%20la%20web%20de%20MR%20Expand" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><i class="fa-brands fa-whatsapp"></i><span>Escribinos</span></a>
 
 <script>
 (function(){
@@ -635,6 +645,20 @@
     result.classList.add('on');
     requestAnimationFrame(function(){ document.getElementById('meter').style.width = pct + '%'; });
     result.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'nearest'});
+  });
+  function resumen(){
+    var negocio = document.getElementById('negocio').value.trim() || '(sin nombre)';
+    return {negocio:negocio, body:'Hola MR Expand, hice el diagnóstico en la web.\n\n' +
+      'Negocio: ' + negocio + '\n' +
+      'Canal principal: ' + answers.canal + '\n' +
+      'Tiempo de respuesta: ' + answers.tiempo + '\n' +
+      'Fuera de horario: ' + answers.noche + '\n' +
+      'Consultas por mes: ' + answers.volumen + '\n\n' +
+      'Me gustaría que lo revisen.'};
+  }
+  document.getElementById('send-wa').addEventListener('click', function(ev){
+    ev.preventDefault();
+    window.open('https://wa.me/5493513210977?text=' + encodeURIComponent(resumen().body), '_blank', 'noopener');
   });
   document.getElementById('send').addEventListener('click', function(ev){
     ev.preventDefault();
