@@ -669,6 +669,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   document.getElementById('send-wa').addEventListener('click', function(ev){
     ev.preventDefault();
+    try { (window.dataLayer = window.dataLayer || []).push({ event: 'formulario_enviado' }); } catch (e) {}
     window.open('https://wa.me/5493513210977?text=' + encodeURIComponent(resumen().body), '_blank', 'noopener');
   });
   document.getElementById('send').addEventListener('click', function(ev){
@@ -685,6 +686,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       encodeURIComponent('Diagnóstico: ' + negocio) + '&body=' + encodeURIComponent(body);
   });
 })();
+</script>
+<script id="medir-contactos">
+document.addEventListener('click', function (e) {
+  var a = e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+  if (!a) return;
+  var lugar = a.classList.contains('wa-float') ? 'boton flotante' : 'contacto';
+  try { (window.dataLayer = window.dataLayer || []).push({ event: 'click_whatsapp', ubicacion_whatsapp: lugar }); } catch (err) {}
+});
 </script>
 </body>
 </html>
